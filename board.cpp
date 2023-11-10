@@ -1,18 +1,14 @@
-#include "board.h"
-#include "display.h"
-#include "colors.h"
 #include <iostream>
+#include <string>
 using namespace std;
 
 
 struct Board {
-    int columns;
-    int rows;
     int numberOfMines;
     int xLocation;
     int yLocation;
-    char ** mineBoard;
-    char ** playerBoard;
+    char mineBoard[10][15];
+    char playerBoard[10][15];
     int currentScore;
 
     void setBoardSize();
@@ -21,60 +17,48 @@ struct Board {
     void getPlayerInput();
     void uncover(int x, int y);
     void flagging();
-
 };
 
+
 void Board::setBoardSize() {
-    cout << "please input the column x row";
-    cin >> columns >> rows;
 
-    mineBoard = new char * [rows];
-    playerBoard = new char * [rows];
-    for (int i = 0; i < rows; ++i) {
-        mineBoard[i] = new char [columns];
-        playerBoard[i] = new char [columns];
-    }
-}
-
-Board::~Board() {
-    for (int i = 0; i < rows; ++i) {
-        delete[] mineBoard[i];
-        delete[] playerBoard[i];
-    }
-    delete[] mineBoard;
-    delete[] playerBoard;
 }
 
 
 void Board::setBoard() {
+    
 }
 
 
 // needs to be edited to highlight or point to where the cursor is currently located
 void Board::printBoard() {
-    char corners[9] = {'┌', '┬', '┐', '├', '┼', '┤', '└', '┴', '┘'};
+    system("clear");
+
+    string corners[9] = {"┌", "┬", "┐", "├", "┼", "┤", "└", "┴", "┘"};
     int l = 0;
 
-    for (int i = 0; i < rows; ++i) {
+    for (int i = 0; i < 10; ++i) {
         if (i != 0) {
             l = 3;
         }
 
         cout << corners[l] << "─────";
 
-        for (int j = 1; j < columns; ++j) {
+        for (int j = 1; j < 15; ++j) {
             cout << corners[l+1] << "─────";
         }
 
         cout << corners[l+2];
+        cout << '\n';
 
-        for (int j = 0; j < columns; ++j) {
-            cout << "│  " << playerBoard[i][j] << "  │";
+        for (int j = 0; j < 15; ++j) {
+            cout << "│  " << playerBoard[i][j] << "  ";
         }
+        cout << "│" << '\n';
     }
 
     cout << corners[6] << "─────";
-    for (int j = 1; j < columns; ++j) {
+    for (int j = 1; j < 15; ++j) {
             cout << corners[7] << "─────";
         }
     cout << corners[8];
@@ -95,7 +79,7 @@ void Board::getPlayerInput() {
 
         switch (playerInput) {
         case 'w':
-            if (yLocation + 1 >= rows) {
+            if (yLocation + 1 >= 10) {
                 ++yLocation;
                 validInput = true;
             }
@@ -116,7 +100,7 @@ void Board::getPlayerInput() {
             break;
 
         case 'd':
-            if (xLocation + 1 >= columns) {
+            if (xLocation + 1 >= 15) {
                 ++xLocation;
                 validInput = true;
             }
@@ -149,12 +133,12 @@ void Board::getPlayerInput() {
 void Board::uncover(int x, int y) {
     if (mineBoard[y][x] == 'B') {
         currentScore -= 100;
-        playerBoard[yLocation][xLocation] = '@';
+        playerBoard[y][x] = '@';
         cout << "You uncovered a mine!";
         return;
     }
     
-    int surroundingMineCount = 0;
+    int surroundingMineCount = 48;
 
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
@@ -166,7 +150,7 @@ void Board::uncover(int x, int y) {
             int neighborX = x + i;
             int neighborY = y + j;
 
-            bool cellOutOfRange = (neighborX < 0 || neighborX >= columns || neighborY < 0 || neighborY >= rows);
+            bool cellOutOfRange = (neighborX < 0 || neighborX >= 15 || neighborY < 0 || neighborY >= 10);
             if (cellOutOfRange) {
                 continue;
             }
@@ -177,8 +161,8 @@ void Board::uncover(int x, int y) {
         }
     }
 
-    if (surroundingMineCount != 0) {
-        playerBoard[yLocation][xLocation] = surroundingMineCount;
+    if (surroundingMineCount != 48) {
+        playerBoard[y][x] = char(surroundingMineCount);
         return;
     }
 
@@ -193,7 +177,7 @@ void Board::uncover(int x, int y) {
             int neighborX = x + i;
             int neighborY = y + j;
 
-            bool cellOutOfRange = (neighborX < 0 || neighborX >= columns || neighborY < 0 || neighborY >= rows);
+            bool cellOutOfRange = (neighborX < 0 || neighborX >= 15 || neighborY < 0 || neighborY >= 10);
                 if (cellOutOfRange) {
                     continue;
                 }
@@ -205,13 +189,13 @@ void Board::uncover(int x, int y) {
 
 
 void Board::flagging() {
-    if (playerBoard[yLocation][xLocation] == '▶') {
-        playerBoard[yLocation][xLocation] == ' ';
+    if (playerBoard[yLocation][xLocation] == 'F') {
+        playerBoard[yLocation][xLocation] = ' ';
         numberOfMines += 1;
         return;
     }
 
-    playerBoard[yLocation][xLocation] == '▶';
+    playerBoard[yLocation][xLocation] = 'F';
     numberOfMines -= 1;
 
     if (mineBoard[yLocation][xLocation] == 'B') {
@@ -222,7 +206,34 @@ void Board::flagging() {
 }
 
 
+int main() {
+    Board b = {
+        50, 3, 3,
+        {{'.', '.', '.', '.', 'B', '.', '.', '.', 'B', '.', 'B', '.', '.', '.', '.'},
+         {'.', 'B', '.', 'B', 'B', 'B', '.', '.', '.', '.', '.', 'B', '.', '.', 'B'}, 
+         {'B', 'B', '.', '.', '.', '.', 'B', '.', 'B', '.', '.', 'B', 'B', '.', 'B'}, 
+         {'.', '.', '.', '.', '.', 'B', 'B', 'B', '.', 'B', '.', '.', '.', '.', '.'}, 
+         {'.', 'B', '.', '.', '.', '.', '.', 'B', '.', '.', 'B', '.', 'B', '.', '.'}, 
+         {'.', '.', 'B', '.', '.', '.', '.', 'B', '.', 'B', 'B', '.', '.', 'B', '.'}, 
+         {'B', '.', '.', '.', '.', 'B', '.', 'B', 'B', '.', '.', 'B', '.', 'B', '.'}, 
+         {'B', 'B', 'B', '.', '.', '.', 'B', '.', 'B', 'B', '.', '.', 'B', '.', '.'}, 
+         {'.', '.', 'B', '.', '.', '.', '.', 'B', '.', '.', 'B', '.', 'B', 'B', '.'}, 
+         {'.', '.', '.', 'B', '.', 'B', '.', '.', '.', 'B', '.', '.', '.', '.', '.'}},
 
-void runGame(Board b){
-    b.setBoard();
+        {{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}},
+        0
+    };
+
+    b.uncover(3, 3);
+    b.printBoard();
+
 }
