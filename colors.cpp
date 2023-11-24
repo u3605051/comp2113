@@ -11,3 +11,4 @@ color blue = "\033[34m";
 color magenta = "\033[35m";
 color cyan = "\033[36m";
 color white = "\033[37m";
+color blueBackground = "\033[44m";
