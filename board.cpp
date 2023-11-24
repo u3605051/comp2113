@@ -1,3 +1,5 @@
+#include "display.h"
+#include "colors.h"
 #include <iostream>
 #include <string>
 using namespace std;
