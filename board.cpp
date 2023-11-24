@@ -22,15 +22,6 @@ struct Board {
 };
 
 
-void Board::setBoardSize() {
-
-}
-
-
-void Board::setBoard() {
-    
-}
-
 
 void Board::setBoardSize() {
     // get input for columns and rows. or setting the difficulty i guess
