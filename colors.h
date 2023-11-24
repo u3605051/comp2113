@@ -13,5 +13,6 @@ extern color blue;
 extern color magenta;
 extern color cyan;
 extern color white;
+extern color blueBackground;
 
 #endif
