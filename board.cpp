@@ -32,42 +32,6 @@ void Board::setBoard() {
 }
 
 
-// needs to be edited to highlight or point to where the cursor is currently located
-void Board::printBoard() {
-    system("clear");
-
-    string corners[9] = {"┌", "┬", "┐", "├", "┼", "┤", "└", "┴", "┘"};
-    int l = 0;
-
-    for (int i = 0; i < 10; ++i) {
-        if (i != 0) {
-            l = 3;
-        }
-
-        cout << corners[l] << "─────";
-
-        for (int j = 1; j < 15; ++j) {
-            cout << corners[l+1] << "─────";
-        }
-
-        cout << corners[l+2];
-        cout << '\n';
-
-        for (int j = 0; j < 15; ++j) {
-            cout << "│  " << blueBackground << playerBoard[i][j] << reset << "  ";
-        }
-        cout << "│" << '\n';
-    }
-
-    cout << corners[6] << "─────";
-    for (int j = 1; j < 15; ++j) {
-            cout << corners[7] << "─────";
-        }
-    cout << corners[8];
-
-}
-
-
 void Board::setBoardSize() {
     // get input for columns and rows. or setting the difficulty i guess
 }
